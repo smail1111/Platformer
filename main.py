@@ -1,6 +1,8 @@
 import pygame
 from spritesheet import SpriteSheet
 from dino import Dino
+from platform import Platform
+from object import Object
 from constants import *
 
 pygame.init()
@@ -13,21 +15,34 @@ dino_sheet_image = pygame.image.load('img/doux.png').convert_alpha()
 def main():
     drawable = pygame.sprite.Group()
     updatable = pygame.sprite.Group()
+    platforms = pygame.sprite.Group()
 
+    
+    Platform.containers = (drawable, platforms)
     Dino.containers = (drawable, updatable)
 
-    dino = Dino(dino_sheet_image, 24, 24, 5, "black", (100,300))
+    Dino(dino_sheet_image, 24, 24, 5, "black", (100,300))
+    
+    Platform ((0, 700), 300, 20)
+    Platform ((300, 600), 100, 20)
+    Platform ((400, 500), 100, 20)
+    Platform ((720, 500), 100, 20)
+    Platform ((900, 650), 150, 20)
+    Platform ((200, 400), 100, 20)
+    Platform ((50, 280), 100, 20)
+    Platform ((300, 160), 300, 20)
+    Platform ((800, 160), 300, 20)
+    Platform ((1100, 520), 100, 20)
+    Platform ((970, 370), 100, 20)
+    Platform ((1100, 240), 100, 20)
 
-    frame = 0
-
-    BG = "black"
-
-    frame_timer = 0.0
+    BG = "lightblue"
     running = True
     
     dt = 0.0
     clock = pygame.time.Clock()
 
+    
     while running:
         screen.fill(BG)
         
@@ -36,25 +51,14 @@ def main():
                 running = False
         
         for sprite in updatable:
-            sprite.update(dt)
-
-        if frame_timer > 100:
-            frame += 1
-            frame_timer = 0
-        else:
-            frame_timer += dt * 75
-        
-        if frame > len(dino.animations[dino.animation]) - 1:
-                frame = 0
-        
+            sprite.update(dt, platforms)
         
         for sprite in drawable:
-            sprite.draw(screen, frame)
+            sprite.draw(screen)
         
         pygame.display.update()
         dt = clock.tick(60) / 100
 
-    
     pygame.quit()
 
 main()
