@@ -32,31 +32,29 @@ class Dino(Object):
         screen.blit(image, self.pos)
 
     
-    def move(self, dt):
-        keys = pygame.key.get_pressed()
-
+    def move(self, dt, keys):
+        
         if keys[pygame.K_LEFT]:
             if keys[pygame.K_LSHIFT]:
                 self.animation = 4
-                self.pos = (self.pos[0] - dt*30, self.pos[1]) if self.pos[0] > 0 else self.pos
+                self.pos = (self.pos[0] - dt * 30, self.pos[1]) if self.pos[0] > 0 else self.pos
             else:
                 self.animation = 1
-                self.pos = (self.pos[0] - dt*10, self.pos[1]) if self.pos[0] > 0 else self.pos
+                self.pos = (self.pos[0] - dt * 10, self.pos[1]) if self.pos[0] > 0 else self.pos
         
         elif keys[pygame.K_RIGHT]:
             if keys[pygame.K_LSHIFT]:
                 self.animation = 4
-                self.pos = (self.pos[0] + dt*30, self.pos[1]) if self.pos[0] + self.width < SCREEN_WIDTH else self.pos
+                self.pos = (self.pos[0] + dt * 30, self.pos[1]) if self.pos[0] + self.width < SCREEN_WIDTH else self.pos
             else:
                 self.animation = 1
-                self.pos = (self.pos[0] + dt*10, self.pos[1]) if self.pos[0] + self.width < SCREEN_WIDTH else self.pos
+                self.pos = (self.pos[0] + dt * 10, self.pos[1]) if self.pos[0] + self.width < SCREEN_WIDTH else self.pos
         
         else:
             self.animation = 0
 
     
-    def jump(self, dt, platforms):
-        keys = pygame.key.get_pressed()
+    def jump(self, dt, keys):
 
         if keys[pygame.K_SPACE] and not (self.jumping or self.falling):
             
@@ -67,42 +65,46 @@ class Dino(Object):
             if not keys[pygame.K_SPACE]:
                 self.jumping = False
             
-            self.jump_timer += 30 * dt
+            self.jump_timer += dt * 30
             self.animation = 2
             self.frame = 2
-            self.pos = (self.pos[0], self.pos[1] - dt*50)
+            self.pos = (self.pos[0], self.pos[1] - dt * 50)
             
             if self.jump_timer > 100:
                 self.jumping = False
-        
-        if not self.jumping:
-            self.fall(dt, platforms)
 
     
-    def fall(self, dt, platforms):
+    def fall(self, dt, objects):
         self.falling = True
-        
-        for platform in platforms:
-            if self.is_on(platform):
+
+        if self.jumping:
+            self.falling = False
+            return
+
+        for obj in objects[0]:
+            if self.is_on(obj):
                 self.falling = False
-                break
+                self.pos = (self.pos[0], obj.pos[1] - self.height + 15)
+                return
         
         if self.falling:
             self.animation = 2
             self.frame = 2 
-            self.pos = (self.pos[0], self.pos[1] + dt*50)
+            self.pos = (self.pos[0], self.pos[1] + dt * 50)
 
 
-    def update(self, dt, platforms):
+    def update(self, dt, objects):
+        keys = pygame.key.get_pressed()
+
         if self.frame_timer > 100:
             self.frame += 1
             self.frame_timer = 0
         else:
-            self.frame_timer += dt * 75
+            self.frame_timer += dt * 70
 
-        self.move(dt)
-        
-        self.jump(dt, platforms)
+        self.move(dt, keys)
+        self.jump(dt, keys)
+        self.fall(dt, objects)
 
-        if self.frame > len(self.animations[self.animation]) - 1:
-                self.frame = 0
+        if not self.frame < len(self.animations[self.animation]):
+            self.frame = 0

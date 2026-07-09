@@ -16,25 +16,26 @@ def main():
     drawable = pygame.sprite.Group()
     updatable = pygame.sprite.Group()
     platforms = pygame.sprite.Group()
-
     
-    Platform.containers = (drawable, platforms)
+    objects = [platforms]
+
+    Platform.containers = (drawable, updatable, platforms)
     Dino.containers = (drawable, updatable)
 
-    Dino(dino_sheet_image, 24, 24, 5, "black", (100,300))
-    
-    Platform ((0, 700), 300, 20)
-    Platform ((300, 600), 100, 20)
-    Platform ((400, 500), 100, 20)
-    Platform ((720, 500), 100, 20)
-    Platform ((900, 650), 150, 20)
+    Platform ((0, 700), 300, 20, 20)
+    Platform ((300, 300), 100, 50, 20, "UD", 10)
+    Platform ((400, 400), 100, 50, -20, "UD", 10)
+    Platform ((720, 520), 100, 50, 15, "UD", 10)
+    Platform ((900, 650), 150, 20, -20)
     Platform ((200, 400), 100, 20)
-    Platform ((50, 280), 100, 20)
-    Platform ((300, 160), 300, 20)
-    Platform ((800, 160), 300, 20)
+    Platform ((50, 280), 100, 20, 30)
+    Platform ((300, 160), 300, 20, -20)
     Platform ((1100, 520), 100, 20)
-    Platform ((970, 370), 100, 20)
+    Platform ((970, 370), 100, 20, 30)
     Platform ((1100, 240), 100, 20)
+    player = Dino(dino_sheet_image, 24, 24, 5, "black", (100,300))
+
+    objects = [platforms, player]
 
     BG = "lightblue"
     running = True
@@ -45,13 +46,13 @@ def main():
     
     while running:
         screen.fill(BG)
-        
+
         for event in pygame.event.get():
             if event.type is pygame.QUIT:
                 running = False
         
         for sprite in updatable:
-            sprite.update(dt, platforms)
+            sprite.update(dt, objects)
         
         for sprite in drawable:
             sprite.draw(screen)
