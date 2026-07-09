@@ -8,7 +8,7 @@ from constants import *
 pygame.init()
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("Sprites")
+pygame.display.set_caption("Platformer")
 
 dino_sheet_image = pygame.image.load('img/doux.png').convert_alpha()
 
@@ -22,18 +22,19 @@ def main():
     Platform.containers = (drawable, updatable, platforms)
     Dino.containers = (drawable, updatable)
 
-    Platform ((0, 700), 300, 20, 20)
-    Platform ((300, 300), 100, 50, 20, "UD", 10)
-    Platform ((400, 400), 100, 50, -20, "UD", 10)
-    Platform ((720, 520), 100, 50, 15, "UD", 10)
-    Platform ((900, 650), 150, 20, -20)
-    Platform ((200, 400), 100, 20)
-    Platform ((50, 280), 100, 20, 30)
-    Platform ((300, 160), 300, 20, -20)
-    Platform ((1100, 520), 100, 20)
-    Platform ((970, 370), 100, 20, 30)
-    Platform ((1100, 240), 100, 20)
-    player = Dino(dino_sheet_image, 24, 24, 5, "black", (100,300))
+    Platform((100, 700), 100, 20)
+    Platform((250, 720), 100, 250, 15, "UD", 15)
+    Platform((400, 500), 100, 250, -15, "UD", 15)
+    Platform((520, 700), 100, 20, 20, "RL", 18)
+    Platform((1000, 600), 100, 300)
+    Platform((1150, 600), 100, 20, 20, "UD", 18)
+    Platform((900, 200), 100, 20, 10, "UD", 5)
+    Platform((680, 300), 200, 20)
+    Platform((300, 300), 300, 20, 20, "UD", 6)
+    Platform((100, 100), 100, 20)
+    
+    
+    player = Dino(dino_sheet_image, 24, 24, 5, "black", (100, 600))
 
     objects = [platforms, player]
 

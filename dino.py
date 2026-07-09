@@ -1,4 +1,5 @@
 import pygame
+import sys
 from spritesheet import SpriteSheet
 from constants import *
 from object import Object
@@ -108,3 +109,6 @@ class Dino(Object):
 
         if not self.frame < len(self.animations[self.animation]):
             self.frame = 0
+        
+        if self.pos[1] + self.height - 18 > SCREEN_HEIGHT:
+            sys.exit()

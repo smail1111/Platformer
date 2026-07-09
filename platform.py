@@ -32,9 +32,9 @@ class Platform(Object):
                 self.pos = (self.pos[0], self.pos[1] - dt * self.speed)
             
             if (self.pos[0] < 0) or (
-                self.pos[0] + self.width > SCREEN_WIDTH) or (
+                self.pos[0] > SCREEN_WIDTH) or (
                 self.pos[1] < 0) or (
-                self.pos[1] + self.height > SCREEN_HEIGHT) or (
+                self.pos[1] > SCREEN_HEIGHT) or (
                 (self.turn_timer is not None and self.turn_timer < 0) 
             ):
                 self.speed = -self.speed
