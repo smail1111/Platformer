@@ -1,15 +1,13 @@
-import pygame
-import sys
 from spritesheet import SpriteSheet
-from constants import *
 from object import Object
+import pygame
 
 class Dino(Object):
     
-    def __init__(self, image, width, height, scale, background, position):
-        super().__init__(position, width, height, scale)
+    def __init__(self, image, position):
+        super().__init__(position, 24, 24, 5)
         
-        self.sprite_sheet = SpriteSheet(image, width, height, scale, background)
+        self.sprite_sheet = SpriteSheet(image, 24, 24, 5, "black")
         self.animations = self.sprite_sheet.get_animations([3, 6, 3, 5, 7])
         self.animation = 0
 
@@ -21,6 +19,12 @@ class Dino(Object):
 
         self.falling = False
 
+        self.died = False
+        self.won = False
+
+    
+    def get_hitbox(self):
+        return Object((self.pos[0] + 40, self.pos[1] + 10), self.width - 80, self.height - 25)
     
     def draw(self, screen):
         image = (self.animations[self.animation][self.frame])
@@ -38,19 +42,18 @@ class Dino(Object):
         if keys[pygame.K_LEFT]:
             if keys[pygame.K_LSHIFT]:
                 self.animation = 4
-                self.pos = (self.pos[0] - dt * 30, self.pos[1]) if self.pos[0] > 0 else self.pos
+                self.pos = (self.pos[0] - dt * 30, self.pos[1])
             else:
                 self.animation = 1
-                self.pos = (self.pos[0] - dt * 10, self.pos[1]) if self.pos[0] > 0 else self.pos
+                self.pos = (self.pos[0] - dt * 10, self.pos[1])
         
         elif keys[pygame.K_RIGHT]:
             if keys[pygame.K_LSHIFT]:
                 self.animation = 4
-                self.pos = (self.pos[0] + dt * 30, self.pos[1]) if self.pos[0] + self.width < SCREEN_WIDTH else self.pos
+                self.pos = (self.pos[0] + dt * 30, self.pos[1])
             else:
                 self.animation = 1
-                self.pos = (self.pos[0] + dt * 10, self.pos[1]) if self.pos[0] + self.width < SCREEN_WIDTH else self.pos
-        
+                self.pos = (self.pos[0] + dt * 10, self.pos[1])
         else:
             self.animation = 0
 
@@ -77,13 +80,14 @@ class Dino(Object):
     
     def fall(self, dt, objects):
         self.falling = True
+        hit_box = self.get_hitbox()
 
         if self.jumping:
             self.falling = False
             return
 
         for obj in objects[0]:
-            if self.is_on(obj):
+            if hit_box.is_on(obj):
                 self.falling = False
                 self.pos = (self.pos[0], obj.pos[1] - self.height + 15)
                 return
@@ -109,6 +113,3 @@ class Dino(Object):
 
         if not self.frame < len(self.animations[self.animation]):
             self.frame = 0
-        
-        if self.pos[1] + self.height - 18 > SCREEN_HEIGHT:
-            sys.exit()
