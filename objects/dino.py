@@ -3,7 +3,6 @@ from objects.object import Object
 import pygame
 
 class Dino(Object):
-    
     def __init__(self, image, position):
         super().__init__(position, 24, 24, 5)
         
@@ -23,10 +22,10 @@ class Dino(Object):
 
         self.died = False
         self.won = False
-
     
     def get_hitbox(self):
         return Object((self.pos[0] + 40, self.pos[1] + 10), self.width - 80, self.height - 25)
+    
     
     def draw(self, screen):
         image = (self.animations[self.animation][self.frame])
@@ -37,10 +36,9 @@ class Dino(Object):
             image.set_colorkey(self.sprite_sheet.background)
         
         screen.blit(image, self.pos)
-
+    
     
     def move(self, dt, keys):
-        
         if keys[pygame.K_LEFT]:
             if keys[pygame.K_LSHIFT]:
                 self.animation = 4
@@ -58,10 +56,9 @@ class Dino(Object):
                 self.pos = (self.pos[0] + dt * 10, self.pos[1])
         else:
             self.animation = 0
-
+    
     
     def jump(self, dt, keys):
-
         if keys[pygame.K_SPACE] and not (self.jumping or self.falling or self.space_pressed):
             self.jump_timer = 0
             self.jumping = True
@@ -82,27 +79,28 @@ class Dino(Object):
         else:
             if not keys[pygame.K_SPACE]:
                 self.space_pressed = False
-
+    
     
     def fall(self, dt, objects):
-        self.falling = True
-        hit_box = self.get_hitbox()
-
         if self.jumping:
             self.falling = False
             return
         
-        for obj in objects[0]:
-            if hit_box.is_on(obj) and obj.is_act:
+        hit_box = self.get_hitbox()
+        for obj in objects["platforms"]:
+            if hit_box.is_on(obj) and obj.is_act and not obj.danger:
                 self.falling = False
                 self.pos = (self.pos[0], obj.pos[1] - self.height + 15)
                 return
-        
-        self.animation = 2
-        self.frame = 2 
-        self.pos = (self.pos[0], self.pos[1] + dt * 50)
 
+        if self.falling:
+            self.animation = 2
+            self.frame = 2 
+            self.pos = (self.pos[0], self.pos[1] + dt * 50)
+        else:
+            self.falling = True
 
+    
     def update(self, dt, objects):
         keys = pygame.key.get_pressed()
 

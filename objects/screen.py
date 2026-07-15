@@ -2,12 +2,9 @@ from constants import SCREEN_WIDTH, SCREEN_HEIGHT
 import pygame
 
 class Screen():
-    
     def __init__(self, objects):
         
         self.surface = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT)).convert_alpha()
-
-        #The first list in objects should be a list of only Platofrms and the second list in objects should be a list containing only the Dino player.
         self.objects = objects
         
         self.screen_up = None
@@ -18,18 +15,20 @@ class Screen():
     def draw(self, display):
         self.surface.fill("lightblue")
         
-        for collection in self.objects:
-            for sprite in collection:
-                sprite.draw(self.surface)
+        for platform in self.objects["platforms"]:
+            platform.draw(self.surface)
+        self.objects["player"].draw(self.surface)
         
         display.blit(self.surface, (0, 0))
     
     def update(self, dt):
-        for collection in self.objects:
-            for sprite in collection:
-                sprite.update(dt, self.objects)
+        for platform in self.objects["platforms"]:
+            platform.update(dt, self.objects)
+        
+        player = self.objects["player"]
 
-        player = self.objects[1][0]
+        player.update(dt, self.objects)
+
         hitbox = player.get_hitbox()
 
         if hitbox.pos[1] + hitbox.height > SCREEN_HEIGHT and not self.screen_down:

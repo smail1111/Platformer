@@ -2,34 +2,45 @@ from objects.object import Object
 import pygame
 
 class Platform(Object):
-    
     def __init__(self, 
                  position, 
                  width, 
                  height,
                  finish = False, 
                  danger = False,
-                 color = "orange", 
+                 color = "orange",
+                 tangled = None
             ):
         super().__init__(position, width, height)
         
         self.is_act = True
-        self.color = color
         self.finish = finish
         self.danger = danger
+        self.color = color
+        self.tangled = tangled
+        if self.tangled:
+            self.tangled.is_tangled = True
     
     def draw(self, screen):
         pygame.draw.rect(screen, self.color, [self.pos[0], self.pos[1], self.width, self.height])
         pygame.draw.rect(screen, "black", [self.pos[0], self.pos[1], self.width, self.height], 5)
     
     def update(self, _, objects):
-        player = objects[1][0]
+        player = objects["player"]
         hit_box = player.get_hitbox()
 
         if hit_box.overlaps(self) and hit_box.is_on(self) and self.finish:
             player.won = True
         if hit_box.overlaps(self) and self.danger:
             player.died = True
+
+        if self.tangled:
+            self.pos = (self.pos[0] + self.tangled.pos[0] - self.tangled.last_pos[0], 
+                        self.pos[1] + self.tangled.pos[1] - self.tangled.last_pos[1])
+            
+            if hit_box.is_on(self):
+                player.pos = (player.pos[0] + self.tangled.pos[0] - self.tangled.last_pos[0], 
+                              player.pos[1] + self.tangled.pos[1] - self.tangled.last_pos[1])
 
 
 class M_Platform(Platform):
@@ -43,19 +54,23 @@ class M_Platform(Platform):
                  alt=False, 
                  finish=False, 
                  danger=False, 
-                 color="orange"):
-        super().__init__(position, width, height, finish, danger, color)
+                 color="orange",
+                 tangled=None
+            ):
+        super().__init__(position, width, height, finish, danger, color, tangled)
 
         self.alt = alt
         self.speed = speed
         self.move_dir = move_dir
         self.turn_time = turn_time
         self.turn_timer = turn_time
+        self.is_tangled = False
 
     def update(self, dt, objects):
-        super().update(dt, objects)
-        
-        player = objects[1][0]
+        if self.is_tangled:
+            self.last_pos = self.pos
+
+        player = objects["player"]
         hit_box = player.get_hitbox()
 
         if (self.move_dir == "RL" or self.move_dir == "D+") and hit_box.is_on(self):
@@ -96,6 +111,8 @@ class M_Platform(Platform):
             else:
                 self.turn_timer -= dt
 
+            super().update(dt, objects)
+
 
 class C_Platform(Platform):
     def __init__(self,  
@@ -107,8 +124,9 @@ class C_Platform(Platform):
                  finish = False, 
                  danger = False,
                  color = "orange", 
+                 tangled = None
             ):
-        super().__init__(position, width, height, finish, danger, color)
+        super().__init__(position, width, height, finish, danger, color, tangled)
 
         self.con = condition
         self.switch = switch
