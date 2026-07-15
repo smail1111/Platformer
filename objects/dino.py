@@ -1,5 +1,5 @@
-from spritesheet import SpriteSheet
-from object import Object
+from objects.spritesheet import SpriteSheet
+from objects.object import Object
 import pygame
 
 class Dino(Object):
@@ -16,6 +16,8 @@ class Dino(Object):
 
         self.jumping = False
         self.jump_timer = 0.0
+
+        self.space_pressed = False
 
         self.falling = False
 
@@ -60,10 +62,10 @@ class Dino(Object):
     
     def jump(self, dt, keys):
 
-        if keys[pygame.K_SPACE] and not (self.jumping or self.falling):
-            
+        if keys[pygame.K_SPACE] and not (self.jumping or self.falling or self.space_pressed):
             self.jump_timer = 0
             self.jumping = True
+            self.space_pressed = True
         
         if self.jumping:
             if not keys[pygame.K_SPACE]:
@@ -77,6 +79,10 @@ class Dino(Object):
             if self.jump_timer > 100:
                 self.jumping = False
 
+        else:
+            if not keys[pygame.K_SPACE]:
+                self.space_pressed = False
+
     
     def fall(self, dt, objects):
         self.falling = True
@@ -85,17 +91,16 @@ class Dino(Object):
         if self.jumping:
             self.falling = False
             return
-
+        
         for obj in objects[0]:
-            if hit_box.is_on(obj):
+            if hit_box.is_on(obj) and obj.is_act:
                 self.falling = False
                 self.pos = (self.pos[0], obj.pos[1] - self.height + 15)
                 return
         
-        if self.falling:
-            self.animation = 2
-            self.frame = 2 
-            self.pos = (self.pos[0], self.pos[1] + dt * 50)
+        self.animation = 2
+        self.frame = 2 
+        self.pos = (self.pos[0], self.pos[1] + dt * 50)
 
 
     def update(self, dt, objects):
@@ -111,5 +116,5 @@ class Dino(Object):
         self.jump(dt, keys)
         self.fall(dt, objects)
 
-        if not self.frame < len(self.animations[self.animation]):
+        if  self.frame >= len(self.animations[self.animation]):
             self.frame = 0

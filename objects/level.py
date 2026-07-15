@@ -1,4 +1,4 @@
-from constants import *
+from constants import SCREEN_WIDTH, SCREEN_HEIGHT
 
 class Level:
     def __init__(self, first_screen):
@@ -16,13 +16,6 @@ class Level:
         self.current_screen.draw(display)
 
     def update(self, dt):
-        
-        if self.player.died:
-            self.reset()
-
-        if self.player.won:
-            self.complete = True
-        
         self.current_screen.update(dt)
         hit_box = self.player.get_hitbox()
 
@@ -46,7 +39,14 @@ class Level:
             self.current_screen = self.current_screen.screen_down
             self.player.pos = (self.player.pos[0], 5)
 
+        if self.player.died:
+            self.reset()
+        if self.player.won:
+            self.complete = True
+
     def reset(self):
         self.current_screen = self.first_screen
         self.player.pos = self.respawn_pos
         self.player.died = False
+        self.complete = False
+        self.player.won = False

@@ -1,4 +1,4 @@
-from constants import *
+from constants import SCREEN_WIDTH, SCREEN_HEIGHT
 import pygame
 
 class Screen():
@@ -6,6 +6,8 @@ class Screen():
     def __init__(self, objects):
         
         self.surface = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT)).convert_alpha()
+
+        #The first list in objects should be a list of only Platofrms and the second list in objects should be a list containing only the Dino player.
         self.objects = objects
         
         self.screen_up = None
