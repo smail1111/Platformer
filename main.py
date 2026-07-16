@@ -1,5 +1,6 @@
-from levels import lv, lv2, lv3, lv4, display
+from levels import lv, lv2, lv3, lv4, lv5, display
 from objects.button import Button
+from constants import BG
 import pygame
 
 pygame.display.set_caption("Platformer")
@@ -14,6 +15,7 @@ one_btn_image = pygame.image.load("img/one_btn.png").convert_alpha()
 two_btn_image = pygame.image.load("img/two_btn.png").convert_alpha()
 three_btn_image = pygame.image.load("img/three_btn.png").convert_alpha()
 four_btn_image = pygame.image.load("img/four_btn.png").convert_alpha()
+five_btn_image = pygame.image.load("img/five_btn.png").convert_alpha()
 
 #Create Buttons
 start_btn = Button(285, 300, start_btn_image)
@@ -25,8 +27,9 @@ one_btn = Button(300, 300, one_btn_image)
 two_btn = Button(450, 300, two_btn_image)
 three_btn = Button(600, 300, three_btn_image)
 four_btn = Button(750, 300, four_btn_image)
+five_btn = Button(900, 300, five_btn_image)
 
-
+#Show Menus
 def main():
     running = True
     
@@ -34,7 +37,7 @@ def main():
         for event in pygame.event.get():
             if event.type is pygame.QUIT:
                 running = False
-        display.fill("lightblue")
+        display.fill(BG)
   
         levels_btn.draw(display)
         start_btn.draw(display)
@@ -45,12 +48,12 @@ def main():
             run_platformer(lv)
             break
         
-        
+        #Show Levels
         def show_levels():
             running = True
             
             while running:
-                display.fill("lightblue")
+                display.fill(BG)
 
                 for event in pygame.event.get():
                     if event.type is pygame.QUIT:
@@ -60,6 +63,7 @@ def main():
                 two_btn.draw(display)
                 three_btn.draw(display)
                 four_btn.draw(display)
+                five_btn.draw(display)
                 back_btn.draw(display)
 
                 if one_btn.get_clicked():
@@ -82,6 +86,11 @@ def main():
                     run_platformer(lv4)
                     break
 
+                if five_btn.get_clicked():
+                    running = False
+                    run_platformer(lv5)
+                    break
+
                 if back_btn.get_clicked():
                     running = False
                     levels_btn.clicked = True
@@ -90,7 +99,7 @@ def main():
 
                 pygame.display.update()
 
-        
+        #Switch To Levels
         if levels_btn.get_clicked():
             back_btn.clicked = True
             running = False
@@ -103,7 +112,7 @@ def main():
         
         pygame.display.update()
 
-
+#Run Level
 def run_platformer(lv):
     current_lv = lv
     dt = 0.0
@@ -137,4 +146,5 @@ def run_platformer(lv):
         pygame.display.update()
         dt = clock.tick(60) / 100
 
+#Call Main
 main()

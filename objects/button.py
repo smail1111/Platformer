@@ -1,16 +1,18 @@
 import pygame
 
 class Button:
-    def __init__(self, x, y, image, scale = 1):   
+    def __init__(self, x: int, y: int, image: pygame.Surface, scale: int = 1) -> None:   
         self.image = pygame.transform.scale(image, (image.get_width() * scale, image.get_height() * scale))
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
         self.clicked = False
 
-    def draw(self, screen):
+    # Draw the button on the screen.
+    def draw(self, screen: pygame.display) -> None:
         screen.blit(self.image, (self.rect.x, self.rect.y))
 
-    def get_clicked(self):
+    # Check if the button is clicked once.
+    def get_clicked(self) -> bool:
         pos = pygame.mouse.get_pos()
         if self.rect.collidepoint(pos):
             if pygame.mouse.get_pressed()[0] and not self.clicked:

@@ -1,7 +1,23 @@
 from constants import SCREEN_WIDTH, SCREEN_HEIGHT
+from objects.screen import Screen
+import pygame
+
+"""
+A level is an object that holds a collection of screens that are connected and the level after it, 
+which can be set by manually setting a level's .next_level variable to the level you wish to set.
+
+The only paramater a level needs is the first level from the connected screens.
+
+The level will update only the currect screen that the player is on and will update the current screen
+if the player goes offscreen and the current screen has a connected screen set in that direction.
+
+If the player dies, the level will reset the player back to the first screen.
+If the player wins, the level will change to the set next level, and if no next level is set,
+the player will be sent back to the title screen.
+"""
 
 class Level:
-    def __init__(self, first_screen):
+    def __init__(self, first_screen: Screen) -> None:
         self.first_screen = first_screen
         self.current_screen = first_screen
         
@@ -9,13 +25,14 @@ class Level:
         self.respawn_pos = self.player.pos
 
         self.next_lv = None
-
         self.complete = False
 
-    def draw(self, display):
+    # Draw the current screen.
+    def draw(self, display: pygame.display) -> None:
         self.current_screen.draw(display)
 
-    def update(self, dt):
+    # Update the current screen, and change screens if the player is offscreen and there is a screen set in that direction.
+    def update(self, dt: float) -> None:
         self.current_screen.update(dt)
         hit_box = self.player.get_hitbox()
 
@@ -44,7 +61,8 @@ class Level:
         if self.player.won:
             self.complete = True
 
-    def reset(self):
+    # Reset the current screen back to the first screen.
+    def reset(self) -> None:
         self.current_screen = self.first_screen
         self.player.pos = self.respawn_pos
         self.player.died = False
