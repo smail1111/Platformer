@@ -1,4 +1,4 @@
-from levels import lv, lv2, lv3, display
+from levels import lv, lv2, lv3, lv4, display
 from objects.button import Button
 import pygame
 
@@ -13,6 +13,7 @@ back_btn_image = pygame.image.load("img/back_btn.png").convert_alpha()
 one_btn_image = pygame.image.load("img/one_btn.png").convert_alpha()
 two_btn_image = pygame.image.load("img/two_btn.png").convert_alpha()
 three_btn_image = pygame.image.load("img/three_btn.png").convert_alpha()
+four_btn_image = pygame.image.load("img/four_btn.png").convert_alpha()
 
 #Create Buttons
 start_btn = Button(285, 300, start_btn_image)
@@ -23,6 +24,7 @@ back_btn = Button(500, 500, back_btn_image)
 one_btn = Button(300, 300, one_btn_image)
 two_btn = Button(450, 300, two_btn_image)
 three_btn = Button(600, 300, three_btn_image)
+four_btn = Button(750, 300, four_btn_image)
 
 
 def main():
@@ -57,6 +59,7 @@ def main():
                 one_btn.draw(display)
                 two_btn.draw(display)
                 three_btn.draw(display)
+                four_btn.draw(display)
                 back_btn.draw(display)
 
                 if one_btn.get_clicked():
@@ -72,6 +75,11 @@ def main():
                 if three_btn.get_clicked():
                     running = False
                     run_platformer(lv3)
+                    break
+
+                if four_btn.get_clicked():
+                    running = False
+                    run_platformer(lv4)
                     break
 
                 if back_btn.get_clicked():

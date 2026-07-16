@@ -9,11 +9,12 @@ class Platform(Object):
                  finish = False, 
                  danger = False,
                  color = "orange",
+                 start = True,
                  tangled = None
             ):
         super().__init__(position, width, height)
         
-        self.is_act = True
+        self.is_act = start
         self.finish = finish
         self.danger = danger
         self.color = color
@@ -22,25 +23,34 @@ class Platform(Object):
             self.tangled.is_tangled = True
     
     def draw(self, screen):
-        pygame.draw.rect(screen, self.color, [self.pos[0], self.pos[1], self.width, self.height])
+        if self.is_act:
+            pygame.draw.rect(screen, self.color, [self.pos[0], self.pos[1], self.width, self.height])
         pygame.draw.rect(screen, "black", [self.pos[0], self.pos[1], self.width, self.height], 5)
     
-    def update(self, _, objects):
-        player = objects["player"]
-        hit_box = player.get_hitbox()
-
-        if hit_box.overlaps(self) and hit_box.is_on(self) and self.finish:
-            player.won = True
-        if hit_box.overlaps(self) and self.danger:
-            player.died = True
-
-        if self.tangled:
-            self.pos = (self.pos[0] + self.tangled.pos[0] - self.tangled.last_pos[0], 
-                        self.pos[1] + self.tangled.pos[1] - self.tangled.last_pos[1])
-            
+    def move_tangled(self, player, hit_box):
+        self.pos = (self.pos[0] + self.tangled.pos[0] - self.tangled.last_pos[0], 
+                    self.pos[1] + self.tangled.pos[1] - self.tangled.last_pos[1])
+        
+        if self.is_act:
             if hit_box.is_on(self):
                 player.pos = (player.pos[0] + self.tangled.pos[0] - self.tangled.last_pos[0], 
-                              player.pos[1] + self.tangled.pos[1] - self.tangled.last_pos[1])
+                            player.pos[1] + self.tangled.pos[1] - self.tangled.last_pos[1])
+
+    def update(self, _, objects):
+        if self.danger or self.finish or self.tangled:
+            player = objects["player"]
+            hit_box = player.get_hitbox()
+
+            if self.is_act:
+                if hit_box.overlaps(self):
+                    if self.danger:
+                        player.died = True
+                    
+                    if hit_box.is_on(self) and self.finish:
+                        player.won = True
+
+            if self.tangled:
+                self.move_tangled(player, hit_box)
 
 
 class M_Platform(Platform):
@@ -55,9 +65,10 @@ class M_Platform(Platform):
                  finish=False, 
                  danger=False, 
                  color="orange",
-                 tangled=None
+                 start=True,
+                 tangled=None,
             ):
-        super().__init__(position, width, height, finish, danger, color, tangled)
+        super().__init__(position, width, height, finish, danger, color, start, tangled)
 
         self.alt = alt
         self.speed = speed
@@ -69,47 +80,48 @@ class M_Platform(Platform):
     def update(self, dt, objects):
         if self.is_tangled:
             self.last_pos = self.pos
+        
+        if self.is_act:
+            player = objects["player"]
+            hit_box = player.get_hitbox()
 
-        player = objects["player"]
-        hit_box = player.get_hitbox()
+            if (self.move_dir == "RL" or self.move_dir == "D+") and hit_box.is_on(self):
+                player.pos = (player.pos[0] + dt * self.speed, player.pos[1])
+            
+            if self.move_dir == "D-" and hit_box.is_on(self):
+                player.pos = (player.pos[0] - dt * self.speed, player.pos[1])
 
-        if (self.move_dir == "RL" or self.move_dir == "D+") and hit_box.is_on(self):
-            player.pos = (player.pos[0] + dt * self.speed, player.pos[1])
-        
-        if self.move_dir == "D-" and hit_box.is_on(self):
-            player.pos = (player.pos[0] - dt * self.speed, player.pos[1])
-
-        if self.move_dir == "RL":
-            self.pos = (self.pos[0] + dt * self.speed, self.pos[1])
-        
-        elif self.move_dir == "UD":
-            self.pos = (self.pos[0], self.pos[1] - dt * self.speed)
-        
-        elif self.move_dir == "D+":
-            self.pos = (self.pos[0] + dt * self.speed, self.pos[1] - dt * self.speed)
-        
-        elif self.move_dir == "D-":
-            self.pos = (self.pos[0] - dt * self.speed, self.pos[1] - dt * self.speed)
-        
-        if self.turn_timer is not None:
-            if self.turn_timer < 0:
-                if not self.alt or self.move_dir == "UD" or self.move_dir == "D+" and self.turn_timer:
-                    self.speed = -self.speed
-                
-                if self.alt:
-                    if self.move_dir == "RL":
-                        self.move_dir = "UD"
-                    elif self.move_dir == "UD":
-                        self.move_dir = "RL"
-                    elif self.move_dir == "D+":
-                        self.move_dir = "D-"
-                    elif self.move_dir == "D-":
-                        self.move_dir = "D+"
-                
-                self.turn_timer = self.turn_time
+            if self.move_dir == "RL":
+                self.pos = (self.pos[0] + dt * self.speed, self.pos[1])
+            
+            elif self.move_dir == "UD":
+                self.pos = (self.pos[0], self.pos[1] - dt * self.speed)
+            
+            elif self.move_dir == "D+":
+                self.pos = (self.pos[0] + dt * self.speed, self.pos[1] - dt * self.speed)
+            
+            elif self.move_dir == "D-":
+                self.pos = (self.pos[0] - dt * self.speed, self.pos[1] - dt * self.speed)
+            
+            if self.turn_timer is not None:
+                if self.turn_timer < 0:
+                    if not self.alt or self.move_dir == "UD" or self.move_dir == "D+" and self.turn_timer:
+                        self.speed = -self.speed
                     
-            else:
-                self.turn_timer -= dt
+                    if self.alt:
+                        if self.move_dir == "RL":
+                            self.move_dir = "UD"
+                        elif self.move_dir == "UD":
+                            self.move_dir = "RL"
+                        elif self.move_dir == "D+":
+                            self.move_dir = "D-"
+                        elif self.move_dir == "D-":
+                            self.move_dir = "D+"
+                    
+                    self.turn_timer = self.turn_time
+                        
+                else:
+                    self.turn_timer -= dt
 
             super().update(dt, objects)
 
@@ -124,20 +136,15 @@ class C_Platform(Platform):
                  finish = False, 
                  danger = False,
                  color = "orange", 
+                 start = True,
                  tangled = None
             ):
-        super().__init__(position, width, height, finish, danger, color, tangled)
+        super().__init__(position, width, height, finish, danger, color, start, tangled)
 
         self.con = condition
         self.switch = switch
         if self.switch:
             self.met_con = False
-
-    def draw(self, screen):
-        if self.is_act:
-            super().draw(screen)
-        else:
-            pygame.draw.rect(screen, "black", [self.pos[0], self.pos[1], self.width, self.height], 5)
     
     def update(self, dt, objects):
         if not self.switch:
@@ -150,5 +157,4 @@ class C_Platform(Platform):
             else:
                 self.met_con = False
        
-        if self.is_act:
-            super().update(dt, objects)
+        super().update(dt, objects)

@@ -55,7 +55,7 @@ lv_2_screen = Screen({
     "platforms":
         [Platform((30, 680), 80, 20),
         Platform((150, 600), 800, 20),
-        M_Platform((1100, 580), 80, 20, 20, "UD", 6),
+        M_Platform((1100, 580), 80, 20, 20, "UD", 5),
         M_Platform((1100, 400), 80, 20, -20, "RL", 10),
         M_Platform((900, 400), 80, 20, -20, "RL", 10),
         M_Platform((700, 400), 80, 20, -20, "RL", 10),
@@ -96,6 +96,7 @@ lv_2_screen_3.screen_down = lv_2_screen_2
 lv2 = Level(lv_2_screen)
 
 lv.next_lv = lv2
+
 
 lv3_1_tangled_1 = M_Platform((160, 400), 20, 80, 20, "RL", 16, danger=True, color="red")
 lv3_1_tangled_2 = M_Platform((515, 380), 20, 80, -10, "UD", 8, danger=True, color="red")
@@ -163,3 +164,65 @@ lv_3_screen_3.screen_down = lv_3_screen_2
 lv3 = Level(lv_3_screen)
 
 lv2.next_lv = lv3
+
+
+player_jumps = lambda objs: objs["player"].jumping
+
+lv4_screen = Screen({
+    "platforms": 
+        [Platform((50, 575), 100, 20),
+         C_Platform((200, 650), 100, 20, player_jumps, True, color="darkblue"),
+         C_Platform((350, 425), 100, 20, player_jumps, True, color="darkblue"),
+         C_Platform((550, 425), 100, 20, player_jumps, True, color="darkblue"),
+         C_Platform((800, 600), 100, 20, player_jumps, True, color="darkblue"),
+         C_Platform((1100, 500), 100, 20, player_jumps, True, color="darkblue"),
+         C_Platform((200, 500), 100, 20, player_jumps, True, start=False, color="darkred"),
+         C_Platform((350, 575), 100, 20, player_jumps, True, start=False, color="darkred"),
+         C_Platform((850, 450), 100, 20, player_jumps, True, start=False, color="darkred"),
+         C_Platform((1050, 450), 100, 20, player_jumps, True, start=False, color="darkred"),
+         C_Platform((700, 200), 20, 200, player_jumps, True, start=False, danger=True, color="red"),
+         C_Platform((1200, 200), 20, 200, player_jumps, True, start=False, danger=True, color="red")],
+    
+    "player": Dino(dino_sheet_image, (50, 475))})
+
+lv4_2_tangled_1 = M_Platform((0, 0), 0, 0, 20, "RL", 40)
+
+lv4_screen_2 = Screen({
+    "platforms": 
+        [Platform((50, 575), 100, 20),
+         Platform((1080, 400), 100, 20),
+         lv4_2_tangled_1,
+         C_Platform((100, 520), 150, 20, player_jumps, True, start=False, color="darkred", tangled=lv4_2_tangled_1),
+         C_Platform((250, 520), 150, 20, player_jumps, True, color="darkblue", tangled=lv4_2_tangled_1),
+         C_Platform((400, 300), 20, 200, player_jumps, True, start=False, danger=True, color="red"),
+         C_Platform((800, 300), 20, 200, player_jumps, True, start=False, danger=True, color="red"),
+         C_Platform((200, 300), 20, 200, player_jumps, True, danger=True, color="red"),
+         C_Platform((600, 300), 20, 200, player_jumps, True, danger=True, color="red"),
+         C_Platform((1000, 300), 20, 200, player_jumps, True, danger=True, color="red")],
+    
+    "player": Dino(dino_sheet_image, (0, 0))})
+
+lv4_3_tangled_1 = M_Platform((0, 0), 0, 0, 20, "UD", 15)
+lv4_3_tangled_2 = M_Platform((0, 0), 0, 0, -20, "UD", 15)
+
+lv4_screen_3 = Screen({
+    "platforms": 
+        [Platform((50, 575), 100, 20),
+         lv4_3_tangled_1,
+         lv4_3_tangled_2,
+         C_Platform((200, 620), 100, 20, player_jumps, True, start=False, color="darkred", tangled=lv4_3_tangled_1),
+         C_Platform((400, 220), 100, 20, player_jumps, True, start=False, color="darkred", tangled=lv4_3_tangled_2),
+         C_Platform((600, 620), 100, 20, player_jumps, True, start=False, color="darkred", tangled=lv4_3_tangled_1),
+         C_Platform((800, 220), 100, 20, player_jumps, True, start=False, color="darkred", tangled=lv4_3_tangled_2),
+         C_Platform((1000, 320), 100, 20, player_jumps, True, finish=True, color="yellow")],
+    
+    "player": Dino(dino_sheet_image, (50, 475))})
+
+lv4_screen.screen_right = lv4_screen_2
+lv4_screen_2.screen_left = lv4_screen
+lv4_screen_2.screen_right = lv4_screen_3
+lv4_screen_3.screen_left = lv4_screen_2
+
+lv4 = Level(lv4_screen)
+
+lv3.next_lv = lv4
