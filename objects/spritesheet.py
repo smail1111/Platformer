@@ -1,7 +1,6 @@
 import pygame
 
 class SpriteSheet:
-    
     def __init__(self, image: pygame.Surface, width: int, height: int, scale: int, color: str | tuple[int, int, int]) -> None:
         self.sheet = image
         self.width = width
@@ -15,8 +14,8 @@ class SpriteSheet:
         image = pygame.transform.scale(image, (self.width * self.scale, self.height * self.scale))
         image.set_colorkey(self.background)
         return image
-    
-    def get_animations(self, animation_frames: list[int]) -> list[pygame.Surface]:
+
+    def get_animations(self, animation_frames: list[int]) -> list[list[pygame.Surface]]:
         animations = []
         i = 0
         for animation in animation_frames:

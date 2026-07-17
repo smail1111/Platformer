@@ -47,7 +47,7 @@ def main() -> None:
         if start_btn.get_clicked():
             run_platformer(lv)
             return
-        
+
         #Show Levels
         while show_levels:
             display.fill(BG)
@@ -55,7 +55,7 @@ def main() -> None:
             for event in pygame.event.get():
                 if event.type is pygame.QUIT:
                     return
-            
+
             one_btn.draw(display)
             two_btn.draw(display)
             three_btn.draw(display)
@@ -93,10 +93,10 @@ def main() -> None:
         if levels_btn.get_clicked():
             back_btn.clicked = True
             show_levels = True
-        
+
         if exit_btn.get_clicked():
             break
-        
+
         pygame.display.update()
 
 #Run Level
@@ -104,14 +104,14 @@ def run_platformer(lv: Level) -> None:
     clock = pygame.time.Clock()
     current_lv = lv
     dt = 0.0
-    
-    while True:   
+
+    while True:
         for event in pygame.event.get():
             if event.type is pygame.QUIT:
                 return
 
         keys = pygame.key.get_pressed()
-        
+
         if keys[pygame.K_ESCAPE]:
             current_lv.reset()
             main()
@@ -119,15 +119,15 @@ def run_platformer(lv: Level) -> None:
 
         current_lv.update(dt)
         current_lv.draw(display)
-        
+
         if current_lv.complete:
             current_lv.reset()
             if current_lv.next_lv is not None:
                 current_lv = current_lv.next_lv
-            else:   
+            else:
                 main()
                 return
-        
+
         pygame.display.update()
         dt = clock.tick(FPS) / 100
 

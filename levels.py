@@ -3,7 +3,7 @@ from objects.screen import Screen
 from objects.water import Water
 from objects.level import Level
 from objects.dino import Dino
-from constants import *
+from constants import SCREEN_WIDTH, SCREEN_HEIGHT, Yellow, Red, DarkRed, DarkBlue
 import pygame
 
 pygame.init()
@@ -30,7 +30,7 @@ screen_2 = Screen({
         Platform((200, 650), 200, 500),
         Platform((950, 700), 100, 20),
         Platform((1100, 600), 100, 20)],
-    
+
     "player": Dino(dino_sheet_image, (0, 0))}
 )
 
@@ -40,7 +40,7 @@ screen_3 = Screen({
         Platform((20, 600), 500, 100),
         Platform((900, 500), 100, 20),
         Platform((1100, 450), 100, 20, finish=True, color=Yellow),],
-    
+
     "player": Dino(dino_sheet_image, (0, 0))}
 )
 
@@ -76,7 +76,7 @@ lv_2_screen_2 = Screen({
         M_Platform((950, 350), 150, 20, 20, "D-", 5),
         M_Platform((500, 300), 150, 20, 20, "D+", 5),
         Platform((400, 100), 200, 20)],
-    
+
     "player": Dino(dino_sheet_image, (0, 0))})
 
 lv_2_screen_3 = Screen({
@@ -86,7 +86,7 @@ lv_2_screen_3 = Screen({
         M_Platform((350, 600), 100, 20, 20, "RL", 6, True),
         M_Platform((750, 300), 100, 20, -20, "D+", 6, True),
         M_Platform((500, 100), 50, 20, 20, "RL", 6, finish=True, color=Yellow)],
-    
+
     "player": Dino(dino_sheet_image, (0, 0))})
 
 lv_2_screen.screen_up = lv_2_screen_2
@@ -115,7 +115,7 @@ lv_3_screen = Screen({
         lv3_1_tangled_2,
         Platform((765, 380), 20, 80, danger=True, color=Red, tangled=lv3_1_tangled_2),
         Platform((800, 400), 20, 80, danger=True, color=Red, tangled=lv3_1_tangled_1)],
-    
+
     "player": Dino(dino_sheet_image, (50, 300))})
 
 lv3_2_tangled_1 = M_Platform((720, 500), 100, 100, 20, "UD", 10, True, danger=True, color=Red)
@@ -132,9 +132,9 @@ lv_3_screen_2 = Screen({
         Platform((1050, 200), 100, 20),
         Platform((1100, 100), 100, 20),
         lv3_2_tangled_1,
-        Platform((1040, 500), 100, 100, 20, danger=True, color=Red, tangled=lv3_2_tangled_1),
-        Platform((400, 500), 100, 100, 20, danger=True, color=Red, tangled=lv3_2_tangled_1)],
-    
+        Platform((1040, 500), 100, 100, danger=True, color=Red, tangled=lv3_2_tangled_1),
+        Platform((400, 500), 100, 100, danger=True, color=Red, tangled=lv3_2_tangled_1)],
+
     "player": Dino(dino_sheet_image, (0, 0))})
 
 lv3_3_tangled_1 = M_Platform((650, 680), 200, 20, -10, "RL", 20)
@@ -154,7 +154,7 @@ lv_3_screen_3 = Screen({
          Platform((565, 620), 20, 80, danger=True, color=Red, tangled=lv3_3_tangled_2),
          Platform((520, 300), 20, 80, danger=True, color=Red, tangled=lv3_3_tangled_3),
          Platform((900, 350), 100, 20, color=Yellow, finish=True)],
-    
+
     "player": Dino(dino_sheet_image, (0, 0))})
 
 lv_3_screen.screen_right = lv_3_screen_2
@@ -166,11 +166,11 @@ lv3 = Level(lv_3_screen)
 
 lv2.next_lv = lv3
 
-
-player_jumps = lambda objs: objs["player"].jumping
+def player_jumps(objs: dict) -> bool:
+    return objs["player"].jumping
 
 lv4_screen = Screen({
-    "platforms": 
+    "platforms":
         [Platform((50, 575), 100, 20),
          C_Platform((200, 650), 100, 20, player_jumps, True, color=DarkBlue),
          C_Platform((350, 425), 100, 20, player_jumps, True, color=DarkBlue),
@@ -183,13 +183,13 @@ lv4_screen = Screen({
          C_Platform((1050, 450), 100, 20, player_jumps, True, start=False, color=DarkRed),
          C_Platform((700, 200), 20, 200, player_jumps, True, start=False, danger=True, color=Red),
          C_Platform((1200, 200), 20, 200, player_jumps, True, start=False, danger=True, color=Red)],
-    
+
     "player": Dino(dino_sheet_image, (50, 475))})
 
 lv4_2_tangled_1 = M_Platform((0, 0), 0, 0, 20, "RL", 40)
 
 lv4_screen_2 = Screen({
-    "platforms": 
+    "platforms":
         [Platform((50, 575), 100, 20),
          Platform((1080, 400), 100, 20),
          lv4_2_tangled_1,
@@ -200,14 +200,14 @@ lv4_screen_2 = Screen({
          C_Platform((200, 300), 20, 200, player_jumps, True, danger=True, color=Red),
          C_Platform((600, 300), 20, 200, player_jumps, True, danger=True, color=Red),
          C_Platform((1000, 300), 20, 200, player_jumps, True, danger=True, color=Red)],
-    
+
     "player": Dino(dino_sheet_image, (0, 0))})
 
 lv4_3_tangled_1 = M_Platform((0, 0), 0, 0, 20, "UD", 15)
 lv4_3_tangled_2 = M_Platform((0, 0), 0, 0, -20, "UD", 15)
 
 lv4_screen_3 = Screen({
-    "platforms": 
+    "platforms":
         [Platform((50, 575), 100, 20),
          lv4_3_tangled_1,
          lv4_3_tangled_2,
@@ -216,7 +216,7 @@ lv4_screen_3 = Screen({
          C_Platform((600, 620), 100, 20, player_jumps, True, start=False, color=DarkRed, tangled=lv4_3_tangled_1),
          C_Platform((800, 220), 100, 20, player_jumps, True, start=False, color=DarkRed, tangled=lv4_3_tangled_2),
          C_Platform((1000, 320), 100, 20, player_jumps, True, finish=True, color=Yellow)],
-    
+
     "player": Dino(dino_sheet_image, (0, 0))})
 
 lv4_screen.screen_right = lv4_screen_2
@@ -236,7 +236,7 @@ lv5_1_tangled_3 = M_Platform((0, 0), 0, 0, 10, "RL", 15)
 lv_5_screen = Screen({
     "platforms":
         [Platform((50, 650), 100, 20)],
-    
+
     "water":
         [lv5_1_tangled_1,
         lv5_1_tangled_2,
@@ -255,13 +255,13 @@ lv_5_screen_2 = Screen({
         [Platform((100, 600), 100, 20),
          Platform((1100, 600), 100, 20),
          Platform((220, 20), 800, 20, danger=True, color=Red),
-         Platform((400, 680), 800, 20, danger=True, color=Red), 
+         Platform((400, 680), 800, 20, danger=True, color=Red),
          Platform((220, 40), 20, 360, danger=True, color=Red),
          Platform((400, 320), 20, 360, danger=True, color=Red),
          Platform((600, 40), 20, 360, danger=True, color=Red),
          Platform((800, 320), 20, 360, danger=True, color=Red),
          Platform((1000, 40), 20, 360, danger=True, color=Red)],
-    
+
     "water":
         [lv5_2_tangled_1,
          Water((220, 40), 100, 640, tangled=lv5_2_tangled_1)],
@@ -277,7 +277,7 @@ lv_5_screen_3 = Screen({
          M_Platform((250, 220), 100, 20, -10, "UD", 20, danger=True, color=Red, tangled=lv5_3_tangled_1),
          M_Platform((250, 475), 100, 20, -10, "UD", 20, danger=True, color=Red, tangled=lv5_3_tangled_1),
          Platform((100, 150), 100, 20, finish=True, color=Yellow)],
-    
+
     "water":
         [lv5_3_tangled_1,
          Water((250, 222), 100, 470, tangled=lv5_3_tangled_1)],

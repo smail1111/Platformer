@@ -3,7 +3,7 @@ from objects.screen import Screen
 import pygame
 
 """
-A level is an object that holds a collection of screens that are connected and the level after it, 
+A level is an object that holds a collection of screens that are connected and the level after it,
 which can be set by manually setting a level's .next_level variable to the level you wish to set.
 
 The only paramater a level needs is the first level from the connected screens.
@@ -17,18 +17,19 @@ the player will be sent back to the title screen.
 """
 
 class Level:
+
     def __init__(self, first_screen: Screen) -> None:
         self.first_screen = first_screen
         self.current_screen = first_screen
-        
+
         self.player = self.first_screen.objects["player"]
         self.respawn_pos = self.player.pos
 
-        self.next_lv = None
+        self.next_lv: Level | None = None
         self.complete = False
 
     # Draw the current screen.
-    def draw(self, display: pygame.display) -> None:
+    def draw(self, display: pygame.Surface) -> None:
         self.current_screen.draw(display)
 
     # Update the current screen, and change screens if the player is offscreen and there is a screen set in that direction.
@@ -40,12 +41,12 @@ class Level:
             self.current_screen.screen_left.objects["player"] = self.player
             self.current_screen = self.current_screen.screen_left
             self.player.pos = (SCREEN_WIDTH - self.player.width, self.player.pos[1])
-        
+
         if hit_box.pos[0] > SCREEN_WIDTH - 1 and self.current_screen.screen_right:
             self.current_screen.screen_right.objects["player"] = self.player
             self.current_screen = self.current_screen.screen_right
             self.player.pos = (0, self.player.pos[1])
-        
+
         if hit_box.pos[1] + hit_box.height < 1 and self.current_screen.screen_up:
             self.current_screen.screen_up.objects["player"] = self.player
             self.current_screen = self.current_screen.screen_up
@@ -58,7 +59,7 @@ class Level:
 
         if self.player.died:
             self.reset()
-        
+
         if self.player.won:
             self.complete = True
 
