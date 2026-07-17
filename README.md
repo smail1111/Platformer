@@ -8,7 +8,7 @@ I will be making a platformer in pygame.
 
 1. Clone Repository
 
-`git repo clone smail1111/Platformer`
+`gh repo clone smail1111/Platformer`
 
 2. Run `main.py`
 
