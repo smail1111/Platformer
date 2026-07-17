@@ -58,6 +58,7 @@ class Level:
 
         if self.player.died:
             self.reset()
+        
         if self.player.won:
             self.complete = True
 
@@ -65,6 +66,7 @@ class Level:
     def reset(self) -> None:
         self.current_screen = self.first_screen
         self.player.pos = self.respawn_pos
+        self.player.facing_left = False
         self.player.died = False
-        self.complete = False
         self.player.won = False
+        self.complete = False

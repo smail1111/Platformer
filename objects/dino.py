@@ -85,7 +85,7 @@ class Dino(Object):
             self.animation = 2
             
             if self.in_water:
-                self.pos = (self.pos[0], self.pos[1] - dt * 25)
+                self.pos = (self.pos[0], self.pos[1] - dt * 30)
             else:
                 self.pos = (self.pos[0], self.pos[1] - dt * 50)
             
@@ -101,7 +101,7 @@ class Dino(Object):
     def is_on_platform(self, platforms: list[Object]) -> tuple[bool, tuple[float, float]]:
         hitbox = self.get_hitbox()
         for platform in platforms:
-            if hitbox.is_on(platform) and platform.is_act and not platform.danger:
+            if platform.width > 0  and platform.height > 0 and hitbox.is_on(platform) and platform.is_act and not platform.danger:
                 return True, (self.pos[0], platform.pos[1] - self.height + 15)
         return False, (0.0, 0.0)
     
@@ -130,7 +130,7 @@ class Dino(Object):
         self.falling = True
         
         if self.in_water:
-            self.pos = (self.pos[0], self.pos[1] + dt * 25)
+            self.pos = (self.pos[0], self.pos[1] + dt * 30)
             self.in_water = False
         else:
             self.pos = (self.pos[0], self.pos[1] + dt * 50)

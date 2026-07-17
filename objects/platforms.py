@@ -53,8 +53,7 @@ class Platform(Object):
                 if hit_box.overlaps(self):
                     if self.danger:
                         player.died = True
-                    
-                    if hit_box.is_on(self) and self.finish:
+                    elif hit_box.is_on(self) and self.finish:
                         player.won = True
 
             if self.tangled:
@@ -75,7 +74,7 @@ class M_Platform(Platform):
                  color: str | tuple[int, int, int] = Orange,
                  start: bool = True,
                  tangled: bool = None,
-            ):
+            ) -> None:
         super().__init__(position, width, height, finish, danger, color, start, tangled)
 
         self.alt = alt
@@ -91,46 +90,40 @@ class M_Platform(Platform):
             self.last_pos = self.pos
         
         if self.is_act:
-            player = objects["player"]
-            hit_box = player.get_hitbox()
+            if self.height > 0 and self.width > 0:
+                player = objects["player"]
+                hit_box = player.get_hitbox()
 
-            if (self.move_dir == "RL" or self.move_dir == "D+") and hit_box.is_on(self):
-                player.pos = (player.pos[0] + dt * self.speed, player.pos[1])
-            
-            if self.move_dir == "D-" and hit_box.is_on(self):
-                player.pos = (player.pos[0] - dt * self.speed, player.pos[1])
+                if (self.move_dir == "RL" or self.move_dir == "D+") and hit_box.is_on(self):
+                    player.pos = (player.pos[0] + dt * self.speed, player.pos[1])
+                elif self.move_dir == "D-" and hit_box.is_on(self):
+                    player.pos = (player.pos[0] - dt * self.speed, player.pos[1])
 
             if self.move_dir == "RL":
                 self.pos = (self.pos[0] + dt * self.speed, self.pos[1])
-            
             elif self.move_dir == "UD":
                 self.pos = (self.pos[0], self.pos[1] - dt * self.speed)
-            
             elif self.move_dir == "D+":
                 self.pos = (self.pos[0] + dt * self.speed, self.pos[1] - dt * self.speed)
-            
             elif self.move_dir == "D-":
                 self.pos = (self.pos[0] - dt * self.speed, self.pos[1] - dt * self.speed)
-            
-            if self.turn_timer is not None:
-                if self.turn_timer < 0:
-                    if not self.alt or self.move_dir == "UD" or self.move_dir == "D+" and self.turn_timer:
-                        self.speed = -self.speed
-                    
-                    if self.alt:
-                        if self.move_dir == "RL":
-                            self.move_dir = "UD"
-                        elif self.move_dir == "UD":
-                            self.move_dir = "RL"
-                        elif self.move_dir == "D+":
-                            self.move_dir = "D-"
-                        elif self.move_dir == "D-":
-                            self.move_dir = "D+"
-                    
-                    self.turn_timer = self.turn_time
-                        
-                else:
-                    self.turn_timer -= dt
+
+            if self.turn_timer < 0:
+                if not self.alt or self.move_dir == "UD" or self.move_dir == "D+":
+                    self.speed = -self.speed
+                if self.alt:
+                    if self.move_dir == "RL":
+                        self.move_dir = "UD"
+                    elif self.move_dir == "UD":
+                        self.move_dir = "RL"
+                    elif self.move_dir == "D+":
+                        self.move_dir = "D-"
+                    elif self.move_dir == "D-":
+                        self.move_dir = "D+"
+                
+                self.turn_timer = self.turn_time      
+            else:
+                self.turn_timer -= dt
 
             super().update(dt, objects)
 
@@ -147,7 +140,7 @@ class C_Platform(Platform):
                  color: str | tuple[int, int, int] = "orange", 
                  start: bool = True,
                  tangled: Object = None
-            ):
+            ) -> None:
         super().__init__(position, width, height, finish, danger, color, start, tangled)
 
         self.con = condition
@@ -168,5 +161,5 @@ class C_Platform(Platform):
                     self.met_con = True
             else:
                 self.met_con = False
-       
+        
         super().update(dt, objects)

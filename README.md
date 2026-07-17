@@ -27,6 +27,12 @@ Jump -> Space
 
 Exit Level -> Escape
 
+2. Levels
+
+There are currently five levels you can play, each with their own mechanics.
+I might add more levels in the future with new mechanics,
+but that's probably going to be the entire game.
+
 ## Credits
 
 The dino sprite is from [ArksDigital](https://arks.itch.io/dino-characters).

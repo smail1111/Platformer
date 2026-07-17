@@ -1,6 +1,7 @@
 from levels import lv, lv2, lv3, lv4, lv5, display
 from objects.button import Button
-from constants import BG
+from objects.level import Level
+from constants import BG, FPS
 import pygame
 
 pygame.display.set_caption("Platformer")
@@ -23,128 +24,112 @@ exit_btn = Button(730, 300, exit_btn_image)
 levels_btn = Button(500, 500, level_btn_image)
 
 back_btn = Button(500, 500, back_btn_image)
-one_btn = Button(300, 300, one_btn_image)
-two_btn = Button(450, 300, two_btn_image)
-three_btn = Button(600, 300, three_btn_image)
-four_btn = Button(750, 300, four_btn_image)
-five_btn = Button(900, 300, five_btn_image)
+one_btn = Button(275, 300, one_btn_image)
+two_btn = Button(425, 300, two_btn_image)
+three_btn = Button(575, 300, three_btn_image)
+four_btn = Button(725, 300, four_btn_image)
+five_btn = Button(875, 300, five_btn_image)
 
 #Show Menus
-def main():
-    running = True
-    
-    while running:
+def main() -> None:
+    show_levels = False
+    show_levels = False
+    while True:
         for event in pygame.event.get():
             if event.type is pygame.QUIT:
-                running = False
+                return
         display.fill(BG)
-  
+
         levels_btn.draw(display)
         start_btn.draw(display)
         exit_btn.draw(display)
 
         if start_btn.get_clicked():
-            running = False
             run_platformer(lv)
-            break
+            return
         
         #Show Levels
-        def show_levels():
-            running = True
+        while show_levels:
+            display.fill(BG)
+
+            for event in pygame.event.get():
+                if event.type is pygame.QUIT:
+                    return
             
-            while running:
-                display.fill(BG)
+            one_btn.draw(display)
+            two_btn.draw(display)
+            three_btn.draw(display)
+            four_btn.draw(display)
+            five_btn.draw(display)
+            back_btn.draw(display)
 
-                for event in pygame.event.get():
-                    if event.type is pygame.QUIT:
-                        running = False
-                
-                one_btn.draw(display)
-                two_btn.draw(display)
-                three_btn.draw(display)
-                four_btn.draw(display)
-                five_btn.draw(display)
-                back_btn.draw(display)
+            if one_btn.get_clicked():
+                run_platformer(lv)
+                return
 
-                if one_btn.get_clicked():
-                    running = False
-                    run_platformer(lv)
-                    break
+            if two_btn.get_clicked():
+                run_platformer(lv2)
+                return
 
-                if two_btn.get_clicked():
-                    running = False
-                    run_platformer(lv2)
-                    break
+            if three_btn.get_clicked():
+                run_platformer(lv3)
+                return
 
-                if three_btn.get_clicked():
-                    running = False
-                    run_platformer(lv3)
-                    break
+            if four_btn.get_clicked():
+                run_platformer(lv4)
+                return
 
-                if four_btn.get_clicked():
-                    running = False
-                    run_platformer(lv4)
-                    break
+            if five_btn.get_clicked():
+                run_platformer(lv5)
+                return
 
-                if five_btn.get_clicked():
-                    running = False
-                    run_platformer(lv5)
-                    break
+            if back_btn.get_clicked():
+                levels_btn.clicked = True
+                show_levels = False
 
-                if back_btn.get_clicked():
-                    running = False
-                    levels_btn.clicked = True
-                    main()
-                    break
-
-                pygame.display.update()
+            pygame.display.update()
 
         #Switch To Levels
         if levels_btn.get_clicked():
             back_btn.clicked = True
-            running = False
-            show_levels()
-            break
+            show_levels = True
         
         if exit_btn.get_clicked():
-            running = False
             break
         
         pygame.display.update()
 
 #Run Level
-def run_platformer(lv):
+def run_platformer(lv: Level) -> None:
+    clock = pygame.time.Clock()
     current_lv = lv
     dt = 0.0
-    clock = pygame.time.Clock()
-    running = True
     
-    while running:   
+    while True:   
         for event in pygame.event.get():
             if event.type is pygame.QUIT:
-                running = False
-                break
+                return
 
         keys = pygame.key.get_pressed()
+        
         if keys[pygame.K_ESCAPE]:
             current_lv.reset()
-            running = False
             main()
-            break
+            return
 
         current_lv.update(dt)
         current_lv.draw(display)
+        
         if current_lv.complete:
             current_lv.reset()
             if current_lv.next_lv is not None:
                 current_lv = current_lv.next_lv
             else:   
-                running = False
                 main()
-                break
+                return
         
         pygame.display.update()
-        dt = clock.tick(60) / 100
+        dt = clock.tick(FPS) / 100
 
 #Call Main
 main()

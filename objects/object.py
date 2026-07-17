@@ -1,3 +1,5 @@
+from constants import FPS
+
 class Object():
     def __init__(self, position: tuple[float, float], width: int, height: int, scale:int = 1) -> None:
         self.pos = position
@@ -9,7 +11,7 @@ class Object():
         return (
             self.pos[0] <= other.pos[0] + other.width and (
             self.pos[0] + self.width >= other.pos[0]) and (
-            other.pos[1] + 10 >= self.pos[1] + self.height >= other.pos[1] - 10)
+            other.pos[1] + 16 - FPS // 10 >= self.pos[1] + self.height >= other.pos[1] - 30 + FPS // 3)
         )
 
     # Check if an object overlaps another object.

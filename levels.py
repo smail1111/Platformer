@@ -56,13 +56,13 @@ lv_2_screen = Screen({
     "platforms":
         [Platform((30, 680), 80, 20),
         Platform((150, 600), 800, 20),
-        M_Platform((1100, 580), 80, 20, 20, "UD", 5),
+        M_Platform((1100, 580), 80, 20, 10, "UD", 10),
         M_Platform((1100, 400), 80, 20, -20, "RL", 10),
         M_Platform((900, 400), 80, 20, -20, "RL", 10),
         M_Platform((700, 400), 80, 20, -20, "RL", 10),
         M_Platform((500, 400), 80, 20, -20, "RL", 10),
-        M_Platform((200, 250), 80, 20, -20, "UD", 5),
-        M_Platform((100, 200), 80, 20, 20, "UD", 5)],
+        M_Platform((200, 320), 80, 20, 10, "UD", 10),
+        M_Platform((100, 160), 80, 20, 10, "UD", 10)],
 
     "player": Dino(dino_sheet_image, (30, 580))})
 
@@ -266,7 +266,7 @@ lv_5_screen_2 = Screen({
         [lv5_2_tangled_1,
          Water((220, 40), 100, 640, tangled=lv5_2_tangled_1)],
 
-    "player": Dino(dino_sheet_image, (100, 500))})
+    "player": Dino(dino_sheet_image, (0, 0))})
 
 lv5_3_tangled_1 = M_Platform((0, 0), 0, 0, 10, "RL", 70)
 
@@ -282,7 +282,7 @@ lv_5_screen_3 = Screen({
         [lv5_3_tangled_1,
          Water((250, 222), 100, 470, tangled=lv5_3_tangled_1)],
 
-    "player": Dino(dino_sheet_image, (100, 500))})
+    "player": Dino(dino_sheet_image, (0, 0))})
 
 lv_5_screen.screen_right = lv_5_screen_2
 lv_5_screen_2.screen_left = lv_5_screen
@@ -292,3 +292,4 @@ lv_5_screen_3.screen_left = lv_5_screen_2
 lv5 = Level(lv_5_screen)
 
 lv4.next_lv = lv5
+# I should probably place each of these levels in their own files at a certain point rather than doing this.
