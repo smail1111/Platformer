@@ -1,7 +1,7 @@
 [project]
-name = "sprites"
-version = "0.1.0"
-description = "Add your description here"
+name = "Platformer"
+version = "1.0.0"
+description = "My second mostly original project."
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [

@@ -18,8 +18,8 @@ wheels = [
 ]
 
 [[package]]
-name = "sprites"
-version = "0.1.0"
+name = "Platformer"
+version = "1.0.0"
 source = { virtual = "." }
 dependencies = [
     { name = "pygame" },
